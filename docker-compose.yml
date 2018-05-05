@@ -1,6 +1,20 @@
 version: "2"
 services:
-  app:
+  openresty_openssl10:
     build: .
+    volumes:
+      - .:/app
+  openresty_openssl11:
+    build:
+      context: .
+      args:
+        RESTY_VERSION: "1.13.6.2rc1"
+        RESTY_OPENSSL_VERSION: "1.1.0h"
+    volumes:
+      - .:/app
+  luajit_openssl11:
+    build:
+      context: .
+      dockerfile: Dockerfile-luajit
     volumes:
       - .:/app

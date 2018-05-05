@@ -1,6 +1,6 @@
 describe("digest", function()
   local Digest = require "openssl-ffi.digest"
-  local to_hex = require("resty.string").to_hex
+  local to_hex = require "spec.support.to_hex"
 
   it("md4", function()
     local digest = Digest.new("md4")
@@ -14,22 +14,10 @@ describe("digest", function()
     assert.equal("5d41402abc4b2a76b9719d911017c592", to_hex(digest:final()))
   end)
 
-  it("mdc2", function()
-    local digest = Digest.new("mdc2")
-    digest:update("hello")
-    assert.equal("4517036cf97b2407d6fe22aa5ab878a3", to_hex(digest:final()))
-  end)
-
   it("ripemd160", function()
     local digest = Digest.new("ripemd160")
     digest:update("hello")
     assert.equal("108f07b8382412612c048d07d13f814118445acd", to_hex(digest:final()))
-  end)
-
-  it("sha", function()
-    local digest = Digest.new("sha")
-    digest:update("hello")
-    assert.equal("ac62a630ca850b4ea07eda664eaecf9480843152", to_hex(digest:final()))
   end)
 
   it("sha1", function()
@@ -84,5 +72,18 @@ describe("digest", function()
     local digest = Digest.new("sha256")
     digest:update("")
     assert.equal("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", to_hex(digest:final()))
+  end)
+
+  it("invalid type", function()
+    assert.has_error(function()
+      Digest.new("foobar")
+    end, "invalid digest type: foobar")
+  end)
+
+  it("repeated final calls", function()
+    local digest = Digest.new("sha256")
+    digest:update("hello")
+    assert.equal("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", to_hex(digest:final()))
+    assert.equal("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", to_hex(digest:final()))
   end)
 end)

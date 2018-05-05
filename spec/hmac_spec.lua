@@ -1,7 +1,7 @@
 describe("hmac", function()
   local Digest = require "openssl-ffi.digest"
   local HMAC = require "openssl-ffi.hmac"
-  local to_hex = require("resty.string").to_hex
+  local to_hex = require "spec.support.to_hex"
 
   it("md4", function()
     local hmac = HMAC.new("Jefe", Digest.new("md4"))
@@ -15,22 +15,10 @@ describe("hmac", function()
     assert.equal("750c783e6ab0b503eaa86e310a5db738", to_hex(hmac:final()))
   end)
 
-  it("mdc2", function()
-    local hmac = HMAC.new("Jefe", Digest.new("mdc2"))
-    hmac:update("what do ya want for nothing?")
-    assert.equal("4a9852a6200306ff45b31f0e5cd0db36", to_hex(hmac:final()))
-  end)
-
   it("ripemd160", function()
     local hmac = HMAC.new("Jefe", Digest.new("ripemd160"))
     hmac:update("what do ya want for nothing?")
     assert.equal("dda6c0213a485a9e24f4742064a7f033b43c4069", to_hex(hmac:final()))
-  end)
-
-  it("sha", function()
-    local hmac = HMAC.new("Jefe", Digest.new("sha"))
-    hmac:update("what do ya want for nothing?")
-    assert.equal("e13cc418ffa5e34731786bffcb3af84593463ba8", to_hex(hmac:final()))
   end)
 
   it("sha1", function()
@@ -85,5 +73,22 @@ describe("hmac", function()
     local hmac = HMAC.new("Jefe", Digest.new("sha256"))
     hmac:update("")
     assert.equal("923598ca6d64af2a5dba79dcd021a8a0fe5c5f557519adaaf0ad532d4506dd30", to_hex(hmac:final()))
+  end)
+
+  it("repeated final calls", function()
+    local hmac = HMAC.new("Jefe", Digest.new("sha256"))
+    hmac:update("what do ya want for nothing?")
+    assert.equal("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843", to_hex(hmac:final()))
+    assert.equal("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843", to_hex(hmac:final()))
+  end)
+
+  it("reset", function()
+    local hmac = HMAC.new("Jefe", Digest.new("sha256"))
+    hmac:update("what do ya want for nothing?")
+    assert.equal("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843", to_hex(hmac:final()))
+    hmac:reset()
+    assert.equal("923598ca6d64af2a5dba79dcd021a8a0fe5c5f557519adaaf0ad532d4506dd30", to_hex(hmac:final()))
+    hmac:update("what do ya want for nothing?")
+    assert.equal("5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843", to_hex(hmac:final()))
   end)
 end)

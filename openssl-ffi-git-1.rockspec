@@ -18,6 +18,7 @@ build = {
     ["openssl-ffi.hmac"] = "lib/openssl-ffi/hmac.lua",
     ["openssl-ffi.pkey"] = "lib/openssl-ffi/pkey.lua",
     ["openssl-ffi.rand"] = "lib/openssl-ffi/rand.lua",
+    ["openssl-ffi.version"] = "lib/openssl-ffi/version.lua",
     ["openssl-ffi.x509"] = "lib/openssl-ffi/x509.lua",
   },
 }

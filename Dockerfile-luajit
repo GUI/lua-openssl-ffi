@@ -1,0 +1,31 @@
+FROM ubuntu:bionic
+
+ARG RESTY_LUAROCKS_VERSION="2.4.4"
+
+RUN set -x && DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        libluajit-5.1-dev \
+        libssl-dev \
+        luajit \
+        unzip \
+    && curl -fSL https://github.com/luarocks/luarocks/archive/${RESTY_LUAROCKS_VERSION}.tar.gz -o luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && cd luarocks-${RESTY_LUAROCKS_VERSION} \
+    && find /usr \
+    && ./configure \
+        --lua-suffix=jit \
+        --with-lua-include=/usr/include/luajit-2.1 \
+    && make build \
+    && make install
+
+RUN luarocks install busted 2.0.rc12-1
+RUN luarocks install luacheck 0.21.2-1
+
+RUN ln -s /usr/bin/luajit /usr/local/bin/resty
+
+RUN mkdir /app
+WORKDIR /app
+COPY . /app

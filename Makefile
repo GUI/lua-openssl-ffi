@@ -1,4 +1,7 @@
-.PHONY: test
+.PHONY: lint test
+
+lint:
+	luacheck lib spec
 
 test:
 	luarocks make --local openssl-ffi-git-1.rockspec

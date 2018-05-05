@@ -1,6 +1,6 @@
 describe("rand", function()
   local rand = require "openssl-ffi.rand"
-  local to_hex = require("resty.string").to_hex
+  local to_hex = require "spec.support.to_hex"
 
   it("bytes", function()
     local str = rand.bytes(5)
