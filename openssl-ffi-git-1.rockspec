@@ -20,5 +20,6 @@ build = {
     ["openssl-ffi.rand"] = "lib/openssl-ffi/rand.lua",
     ["openssl-ffi.version"] = "lib/openssl-ffi/version.lua",
     ["openssl-ffi.x509"] = "lib/openssl-ffi/x509.lua",
+    ["openssl-ffi.x509.certificate"] = "lib/openssl-ffi/x509/certificate.lua",
   },
 }
